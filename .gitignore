@@ -1,0 +1,45 @@
+# ── Model weights & checkpoints ──────────────────────────────────────────────
+checkpoints/
+models/
+
+# ── Large datasets ────────────────────────────────────────────────────────────
+eval_dataset/
+
+# ── Generated outputs ─────────────────────────────────────────────────────────
+eval_results/
+preproc/
+*.npz
+*.npy
+
+# ── Third-party clones (set up by user per README) ────────────────────────────
+Depth-Anything-V3/
+ViPE/
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Environment & secrets ─────────────────────────────────────────────────────
+.env
+*.env.*
+.venv/
+venv/
+env/
+
+# ── OS / editor ───────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
