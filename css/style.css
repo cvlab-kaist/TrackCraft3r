@@ -101,12 +101,14 @@ a:hover { text-decoration: underline; }
 
 /* --- Authors --- */
 .authors {
-  text-align: center;
-  font-size: clamp(12px, 1.5vw, 16px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2px 6px;
+  font-size: clamp(13px, 1.5vw, 16px);
   margin: 8px 0 4px;
-  white-space: nowrap;
 }
-.authors span { display: inline-block; margin: 0 5px; }
+.authors span { display: inline; }
 .authors sup { font-size: 12px; }
 .authors a { color: var(--ink); border-bottom: 1px dotted #aaa; }
 .authors a:hover { color: var(--accent-deep); border-bottom-color: var(--accent-deep); text-decoration: none; }
@@ -527,4 +529,66 @@ table.results tr.ours td.method { color: var(--accent-deep); font-weight: 700; }
   -webkit-text-fill-color: transparent;
           color: transparent;
   font-weight: 700;
+}
+
+/* ==========================================================================
+   Mobile responsiveness (≤ 768 px tablets, ≤ 480 px phones)
+   ========================================================================== */
+
+/* Prevent horizontal scroll from any overflowing child */
+body { overflow-x: hidden; }
+
+@media (max-width: 768px) {
+  /* Hero */
+  .hero { padding: 28px 20px 20px; }
+  .hero h1 { font-size: 26px; }
+
+  /* Authors: allow wrapping */
+  .authors { white-space: normal; line-height: 1.9; font-size: 14px; }
+  .affiliations { font-size: 14px; }
+
+  /* Content cards */
+  .content { padding: 20px 18px; margin: 12px 10px; }
+
+  /* Table: touch scroll on iOS */
+  .table-scroll { -webkit-overflow-scrolling: touch; }
+}
+
+@media (max-width: 480px) {
+  /* Hero */
+  .hero { padding: 22px 14px 16px; }
+  .hero h1 { font-size: 20px; letter-spacing: -0.01em; line-height: 1.25; }
+  .hero .subtitle { font-size: 15px; }
+  .venue { font-size: 11px; }
+
+  /* Authors */
+  .authors { font-size: 13px; }
+  .affiliations { font-size: 13px; }
+  .affiliations span { display: inline-block; margin: 1px 6px; }
+
+  /* Buttons */
+  .btn { font-size: 13px; padding: 7px 14px; }
+
+  /* Content */
+  .content { padding: 16px 14px; margin: 8px 6px; border-radius: 10px; }
+  .content h2 { font-size: 20px; }
+  .content h3 { font-size: 16px; }
+  .content p { font-size: 15px; }
+
+  /* Table */
+  table.results { font-size: 11px; }
+  table.results th, table.results td { padding: 5px 5px; }
+  table.results td.method { white-space: nowrap; }
+
+  /* Robust grid → 2 columns on phones */
+  .robust-grid { grid-template-columns: repeat(2, 1fr) !important; }
+
+  /* Idea grid already 1-col at 760px, but font */
+  .idea h4 { font-size: 15px; }
+
+  /* Efficiency table full width */
+  .eff-table { max-width: 100%; }
+
+  /* BibTeX */
+  .bibtex pre { font-size: 11px; padding: 12px 14px; }
 }
