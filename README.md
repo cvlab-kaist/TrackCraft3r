@@ -139,8 +139,7 @@ your_video → preprocess (DA3 or ViPE) → build_user_npz → inference → vis
 ```
 
 The walkthrough below uses the included sample
-[`assets/example/breakdance.mp4`](assets/example/breakdance.mp4)
-(84 frames, 854×480, 10 fps). Defaults: 12 frames at stride 5 (covers frames `[0, 5, …, 55]`).
+[`assets/example/breakdance.mp4`](assets/example/breakdance.mp4).
 
 
 ### 6.1 Extract depth + camera
@@ -238,8 +237,7 @@ The output NPZ contains:
 
 ### 6.3 Run inference + save the dense prediction
 
-`--num_frames` × `--frame_stride` decides which frames the model sees
-(default `12 × 5` covers frames `[0, 5, ..., 55]`). The NPZ from §6.2
+`--num_frames` × `--frame_stride` decides which frames the model sees. The NPZ from §6.2
 keeps all frames so you can re-run inference at different settings
 without re-building.
 
