@@ -13,3 +13,6 @@ pynvml
 pandas
 accelerate
 peft
+viser
+scipy
+matplotlib

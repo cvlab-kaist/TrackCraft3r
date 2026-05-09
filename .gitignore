@@ -1,6 +1,6 @@
 # ── Model weights & checkpoints ──────────────────────────────────────────────
 checkpoints/
-models/
+/models/
 
 # ── Large datasets ────────────────────────────────────────────────────────────
 eval_dataset/

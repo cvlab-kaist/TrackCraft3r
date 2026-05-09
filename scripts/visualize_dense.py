@@ -63,13 +63,16 @@ def main():
                    help="Spatial downsample for the per-frame point clouds.")
     p.add_argument("--traj_downsample", type=int, default=4,
                    help="Grid stride for picking trajectory candidates.")
-    p.add_argument("--dynamic_percentile", type=float, default=90.0,
+    p.add_argument("--dynamic_percentile", type=float, default=90.5,
                    help="Show trajectories above this motion percentile.")
     p.add_argument("--max_tracks", type=int, default=2000,
                    help="Cap drawn trajectories.")
     p.add_argument("--traj_color", choices=["time", "query"], default="query",
                    help="'query' = each track keeps one color (HSV by image-y); "
                         "'time' = viridis along time, segments change color.")
+    p.add_argument("--delta_zero", type=float, default=0.05,
+                   help="Zero out per-pixel trajectory deltas smaller than this (metres). "
+                        "Removes VAE/diffusion wobble on static pixels. 0 to disable.")
     args = p.parse_args()
 
     d = np.load(args.dense_npz)
@@ -88,6 +91,14 @@ def main():
     # Per-pixel peak displacement from frame 0 — drives dynamic selection.
     motion = np.linalg.norm(track_map - track_map[0:1], axis=-1).max(axis=0)  # (H, W)
 
+    # Delta-zero: remove sub-threshold wobble from trajectory positions.
+    if args.delta_zero > 0:
+        delta = track_map - track_map[0:1]                        # (T, H, W, 3)
+        mag   = np.linalg.norm(delta, axis=-1, keepdims=True)     # (T, H, W, 1)
+        track_map = (track_map[0:1] + np.where(mag >= args.delta_zero, delta, 0.0)).astype(np.float32)
+        print(f"  delta-zero (|δ|<{args.delta_zero}m): "
+              f"{int((mag < args.delta_zero).sum())}/{mag.size} entries zeroed")
+
     # Trajectory candidate grid.
     h_g = np.arange(0, H, args.traj_downsample)
     w_g = np.arange(0, W, args.traj_downsample)
@@ -98,7 +109,7 @@ def main():
                                 control_width="large", show_logo=False)
 
     scene_std = float(recon_map.reshape(-1, 3).std())
-    point_size = float(np.clip(scene_std * 0.012, 0.0008, 0.008))
+    point_size = 0.04
     print(f"  scene std={scene_std:.4f}, point_size={point_size:.4f}")
 
     # ---- Frame 0 anchor cloud (always visible) -------------------------------
@@ -133,7 +144,7 @@ def main():
     g_ps         = server.gui.add_slider("Point size", min=0.0005, max=0.05,
                                          step=0.0005, initial_value=point_size)
     g_lw         = server.gui.add_slider("Line width", min=0.5, max=10.0,
-                                         step=0.5, initial_value=2.5)
+                                         step=0.5, initial_value=0.5)
     g_pct        = server.gui.add_slider("Dynamic percentile", min=50.0, max=99.5,
                                          step=0.5, initial_value=args.dynamic_percentile)
     g_max        = server.gui.add_slider("Max tracks", min=50, max=10000,

@@ -1,6 +1,6 @@
 # TrackCraft3R: Repurposing Video Diffusion Transformers for Dense 3D Tracking
 
-[Paper (TBD)]() &nbsp;|&nbsp; [arXiv (TBD)]() &nbsp;|&nbsp; [Project Page (TBD)]()
+[Paper (TBD)]() &nbsp;|&nbsp; [arXiv (TBD)]() &nbsp;|&nbsp; [Project Page](https://cvlab-kaist.github.io/TrackCraft3r)
 
 This repository contains the official training code for **TrackCraft3R**, the first method that repurposes a pre-trained video diffusion transformer (Wan2.1-T2V-1.3B) as a single-pass dense 3D tracker. Given a monocular video together with its predicted depth and camera, TrackCraft3R predicts dense 3D trajectories in a single forward pass.
 
@@ -142,9 +142,6 @@ The walkthrough below uses the included sample
 [`assets/example/breakdance.mp4`](assets/example/breakdance.mp4)
 (84 frames, 854×480, 10 fps). Defaults: 12 frames at stride 5 (covers frames `[0, 5, …, 55]`).
 
-> **Image directory input:** if your video is a folder of PNG/JPG frames instead of an mp4,
-> replace `--video_path <file>.mp4` with `--frame_dir <directory>/` in §6.1A below, and
-> pass the directory path as `--video_path` in §6.2 (the script auto-detects file vs dir).
 
 ### 6.1 Extract depth + camera
 
@@ -247,6 +244,7 @@ keeps all frames so you can re-run inference at different settings
 without re-building.
 
 ```bash
+MODELSCOPE_CACHE=./checkpoints/wan_models \
 python scripts/inference_user_video.py \
     --checkpoint_path ./checkpoints/trackcraft3r/model.safetensors \
     --input_npz  ./breakdance_user.npz \
@@ -262,14 +260,8 @@ point cloud), and `rgb` (T,H,W,3) for point-cloud coloring.
 ### 6.4 Visualize with Viser
 
 ```bash
-pip install viser
 python scripts/visualize_dense.py --dense_npz ./breakdance_dense.npz --port 8080
 ```
-
-Open `http://localhost:8080`. The viewer shows the per-frame point cloud
-(frame slider) and a track-trail overlay for the most dynamic pixels.
-This script does **only** visualization; it doesn't load the model or
-run inference.
 
 ---
 

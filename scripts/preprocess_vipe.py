@@ -67,7 +67,7 @@ def main():
         "pipeline=default", "streams=raw_mp4_stream",
         f"streams.base_path={work_in}",
         f"pipeline.output.path={out_dir}",
-        "pipeline.post.depth_align_model=null",
+        "pipeline.output.process_end_index=1",
     ]
     print(f"  running: {' '.join(cmd)}  (cwd={args.vipe_root})")
     subprocess.run(cmd, cwd=args.vipe_root, env=env, check=True)
