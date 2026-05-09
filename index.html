@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrackCraft3R: Repurposing Video Diffusion Transformers for Dense 3D Tracking</title>
+
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎯</text></svg>" type="image/svg+xml">
+
+  <!-- MathJax for inline LaTeX -->
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$','$'], ['\\(','\\)']] } };
+  </script>
+  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+<!-- =============================================================
+     HERO: title, authors, action buttons
+============================================================= -->
+<header class="content hero">
+  <span class="venue">arXiv 2026</span>
+  <h1>
+    <span class="ours">TrackCraft3R</span>:
+    <span class="subtitle-inline">Repurposing Video Diffusion Transformers for Dense 3D Tracking</span>
+  </h1>
+
+  <p class="authors">
+    <span><a href="https://nam-jisu.github.io" target="_blank" rel="noopener">Jisu Nam</a><sup>1</sup></span>
+    <span><a href="https://scholar.google.com/citations?user=1Vl37dcAAAAJ&hl=en" target="_blank" rel="noopener">Jahyeok Koo</a><sup>1</sup></span>
+    <span><a href="https://scholar.google.com/citations?user=Eo87mRsAAAAJ" target="_blank" rel="noopener">Soowon Son</a><sup>1</sup></span>
+    <span><a href="https://crepejung00.github.io/" target="_blank" rel="noopener">Jaewoo Jung</a><sup>1</sup></span>
+    <span><a href="https://hg010303.github.io/" target="_blank" rel="noopener">Honggyu An</a><sup>1</sup></span>
+    <span><a href="https://hurjunhwa.github.io/" target="_blank" rel="noopener">Junhwa Hur</a><sup>2,†</sup></span>
+    <span><a href="https://scholar.google.com/citations?user=cIK1hS8AAAAJ&hl=ko" target="_blank" rel="noopener">Seungryong Kim</a><sup>1,†</sup></span>
+  </p>
+  <p class="affiliations">
+    <span><sup>1</sup> KAIST</span>
+    <span><sup>2</sup> Google DeepMind</span>
+    <span><sup>†</sup> Corresponding authors</span>
+  </p>
+
+  <div class="actions">
+    <a class="btn" href="#" target="_blank" rel="noopener">📄 Paper</a>
+    <a class="btn" href="#" target="_blank" rel="noopener">🗂 arXiv</a>
+    <a class="btn" href="https://github.com/cvlab-kaist/TrackCraft3r" target="_blank" rel="noopener">💻 Code</a>
+  </div>
+</header>
+
+<!-- =============================================================
+     CLICK-TO-PLAY VIDEO GALLERY
+============================================================= -->
+<section class="content">
+  <h2>Dense 3D Tracking in the Wild</h2>
+  <p>
+    <span class="hl-grad"><strong>TrackCraft3R</strong> is the first method that repurposes a video diffusion transformer as a feed-forward dense 3D tracker.</span> Click any thumbnail to view the predicted dense 3D tracks on real-world videos.
+  </p>
+
+
+  <div class="gallery">
+    <!-- Main player -->
+    <div class="player" id="main-player">
+      <video muted loop playsinline preload="metadata"></video>
+      <div class="overlay-info"></div>
+      <div class="loader">LOADING…</div>
+    </div>
+
+    <!-- Thumbnails (below the player) -->
+    <div class="thumbs">
+      <button class="thumb"
+              data-src="videos/breakdance.mp4"
+              data-poster="posters/breakdance.jpg"
+              data-label="Breakdance">
+        <img src="posters/breakdance.jpg" alt="Breakdance" loading="lazy">
+        <span class="label">Breakdance</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/two_dogs.mp4"
+              data-poster="posters/two_dogs.jpg"
+              data-label="Two Dogs">
+        <img src="posters/two_dogs.jpg" alt="Two Dogs" loading="lazy">
+        <span class="label">Two Dogs</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/cart.mp4"
+              data-poster="posters/cart.jpg"
+              data-label="Cart">
+        <img src="posters/cart.jpg" alt="Cart" loading="lazy">
+        <span class="label">Cart</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/rabbits.mp4"
+              data-poster="posters/rabbits.jpg"
+              data-label="Rabbits">
+        <img src="posters/rabbits.jpg" alt="Rabbits" loading="lazy">
+        <span class="label">Rabbits</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/motocycle.mp4"
+              data-poster="posters/motocycle.jpg"
+              data-label="Motorcycle">
+        <img src="posters/motocycle.jpg" alt="Motorcycle" loading="lazy">
+        <span class="label">Motorcycle</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/two_cows.mp4"
+              data-poster="posters/two_cows.jpg"
+              data-label="Two Cows">
+        <img src="posters/two_cows.jpg" alt="Two Cows" loading="lazy">
+        <span class="label">Two Cows</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/shopping.mp4"
+              data-poster="posters/shopping.jpg"
+              data-label="Shopping">
+        <img src="posters/shopping.jpg" alt="Shopping" loading="lazy">
+        <span class="label">Shopping</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/elephants.mp4"
+              data-poster="posters/elephants.jpg"
+              data-label="Elephants">
+        <img src="posters/elephants.jpg" alt="Elephants" loading="lazy">
+        <span class="label">Elephants</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/giraffes.mp4"
+              data-poster="posters/giraffes.jpg"
+              data-label="Giraffes in the Playground">
+        <img src="posters/giraffes.jpg" alt="Giraffes in the Playground" loading="lazy">
+        <span class="label">Giraffes in the Playground</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/dog.mp4"
+              data-poster="posters/dog.jpg"
+              data-label="Dog">
+        <img src="posters/dog.jpg" alt="Dog" loading="lazy">
+        <span class="label">Dog</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/horse.mp4"
+              data-poster="posters/horse.jpg"
+              data-label="Horse">
+        <img src="posters/horse.jpg" alt="Horse" loading="lazy">
+        <span class="label">Horse</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/two_giraffes.mp4"
+              data-poster="posters/two_giraffes.jpg"
+              data-label="Two Giraffes">
+        <img src="posters/two_giraffes.jpg" alt="Two Giraffes" loading="lazy">
+        <span class="label">Two Giraffes</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/sheep.mp4"
+              data-poster="posters/sheep.jpg"
+              data-label="Sheep">
+        <img src="posters/sheep.jpg" alt="Sheep" loading="lazy">
+        <span class="label">Sheep</span>
+      </button>
+      <button class="thumb"
+              data-src="videos/ducks.mp4"
+              data-poster="posters/ducks.jpg"
+              data-label="Ducks">
+        <img src="posters/ducks.jpg" alt="Ducks" loading="lazy">
+        <span class="label">Ducks</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     ABSTRACT
+============================================================= -->
+<section class="content">
+  <h2 style="text-align:center;">Abstract</h2>
+  <p>
+    Dense 3D tracking from monocular video is fundamental to dynamic scene understanding. While recent 3D foundation models provide reliable per-frame geometry, recovering object motion in this geometry remains challenging and benefits from strong motion priors learned from real-world videos. Existing 3D trackers either follow iterative paradigms trained from scratch on synthetic data or fine-tune 3D reconstruction models learned from static multi-view images, both lacking real-world motion priors. Pre-trained video diffusion transformers (video DiTs) offer rich spatio-temporal priors from internet-scale videos, making them a promising foundation for 3D tracking. However, their <em>frame-anchored</em> formulation, which generates each frame's content, is fundamentally mismatched with <em>reference-anchored</em> dense 3D tracking, which must follow the same physical points from a reference frame across time.
+  </p>
+  <p>
+    We present <strong class="hl-grad">TrackCraft3R</strong>, the first method to repurpose a video DiT as a feed-forward dense 3D tracker. Given a monocular video and its frame-anchored reconstruction pointmap, <strong class="hl-grad">TrackCraft3R</strong> predicts a reference-anchored tracking pointmap that follows every pixel of the first frame across time in a single forward pass, along with its visibility. We achieve this through two designs: (i) a <strong>dual-latent representation</strong> that uses per-frame geometry latents and reference-anchored track latents as dense queries; and (ii) <strong>temporal RoPE alignment</strong>, which specifies the target timestamp of each track latent. Together, these designs convert the per-frame generative paradigm of video DiTs into a reference-anchored tracking formulation with LoRA fine-tuning.
+  </p>
+  <p>
+    <strong class="hl-grad">TrackCraft3R</strong> achieves state-of-the-art performance on standard sparse and dense 3D tracking benchmarks, while running 1.3× faster and using 4.6× less peak memory than the strongest prior method. We further demonstrate robustness to large motions and long videos. Our code and weights will be publicly released.
+  </p>
+</section>
+
+<!-- =============================================================
+     METHOD
+============================================================= -->
+<section class="content">
+  <h2>Method</h2>
+
+  <h3>Pointmap Representation</h3>
+  <div class="pointmap-section">
+    <figure class="pointmap-fig">
+      <img src="figures/pointmap.png" alt="Reconstruction vs. tracking pointmap">
+    </figure>
+    <p>
+      We adopt two pointmap representations in a shared world coordinate frame. The <strong>frame-anchored reconstruction pointmap</strong> $\mathbf{P}_j(t_j)$ gives the 3D positions of frame $\mathbf{I}_j$ at its own timestamp $t_j$, readily obtained from off-the-shelf depth and camera-pose estimators. The <strong>reference-anchored tracking pointmap</strong> $\mathbf{P}_0(t_j)$ gives the 3D positions of the content originally seen in $\mathbf{I}_0$ at timestamp $t_j$.
+    </p>
+    <p>
+      <strong>Goal.</strong> Given a video $\mathbf{V} = \{\mathbf{I}_j\}_{j=0}^{F}$ and its reconstruction pointmaps $\{\mathbf{P}_j(t_j)\}_{j=0}^{F}$, predict the tracking pointmaps $\{\mathbf{P}_0(t_j)\}_{j=0}^{F}$ that establish dense 3D correspondences across time, together with visibility maps $\{\mathbf{o}_j\}_{j=0}^{F}$.
+    </p>
+  </div>
+
+  <h3>Overall Architecture</h3>
+  <figure class="fig-architecture">
+    <img src="figures/architecture.jpg" alt="TrackCraft3R architecture">
+  </figure>
+  <p>
+    Each RGB frame and its reconstruction pointmap are encoded by separate VAE encoders into latents $\mathbf{z}_j^{\text{rgb}}$ and $\mathbf{z}_j^{\text{pm}}$. We repurpose the video DiT's full 3D attention with two key designs.
+  </p>
+
+  <div class="idea-grid">
+    <div class="idea">
+      <h4>① Dual-Latent Representation</h4>
+      <p>The <em>geometry latent</em> $\mathbf{g}_j = [\mathbf{z}_j^{\text{rgb}};\, \mathbf{z}_j^{\text{pm}}]$ couples RGB appearance and 3D geometry at timestamp $t_j$ via channel-wise concatenation. The <em>first-frame-anchored track latent</em> $\mathbf{r}_j = \mathbf{g}_0$ replicates the first-frame geometry latent across all timestamps and serves as a dense query for tracking. Once $\mathbf{r}_j$ matches the same physical point in $\mathbf{g}_j$ via attention, the matched pointmap latent directly provides its 3D position.</p>
+    </div>
+    <div class="idea">
+      <h4>② Temporal RoPE Alignment</h4>
+      <p>To make each track latent attend to the geometry latent at the correct timestamp, we repurpose the temporal axis of 3D RoPE and assign $\mathbf{g}_j$ and $\mathbf{r}_j$ the <em>same temporal index $t_j$</em>. Since RoPE encodes relative position, tokens with identical temporal indices exhibit stronger attention, so each $\mathbf{r}_j$ attends to its $\mathbf{g}_j$ at timestamp $t_j$.</p>
+    </div>
+  </div>
+
+  <p style="margin-top:14px;">
+    The track-latent outputs are then decoded by two VAE decoders into a residual displacement $\hat{\boldsymbol{\Delta}}_j$ and a visibility map $\hat{\mathbf{o}}_j$, and the tracking pointmap is recovered as $\hat{\mathbf{P}}_0(t_j) = \mathbf{P}_0(t_0) + \hat{\boldsymbol{\Delta}}_j$.
+  </p>
+</section>
+
+<!-- =============================================================
+     ATTENTION VISUALIZATION
+============================================================= -->
+<section class="content">
+  <h2>Attention Visualization</h2>
+  <p>
+    Query point in green. <strong>(a)</strong> Attention from $\mathbf{r}_5$ to $\{\mathbf{g}_j\}$ concentrates on $\mathbf{g}_5$: RoPE aligns each track latent with the correct timestamp. <strong>(b)</strong> Within $\mathbf{g}_5$, attention finds the same physical point under motion, yielding accurate dense correspondence between track and geometry latents.
+  </p>
+
+  <div class="attn-block">
+    <div class="attn-row">
+      <div class="row-label">(a)</div>
+      <div class="attn-cell"><img src="figures/attn_query.png" alt="query"><div class="cap">$\mathbf{r}_5$, Query point</div></div>
+      <div class="attn-cell"><img src="figures/attn_g02.png" alt="g_2"><div class="cap">$\mathbf{g}_2$</div></div>
+      <div class="attn-cell"><img src="figures/attn_g05.png" alt="g_5"><div class="cap">$\mathbf{g}_5$</div></div>
+      <div class="attn-cell"><img src="figures/attn_g08.png" alt="g_8"><div class="cap">$\mathbf{g}_8$</div></div>
+    </div>
+  </div>
+
+  <div class="attn-block">
+    <div class="attn-row">
+      <div class="row-label">(b)</div>
+      <div class="attn-cell"><img src="figures/attn_query.png" alt="query"><div class="cap">$\mathbf{r}_5$, Query point</div></div>
+      <div class="attn-cell"><img src="figures/attn_layer14.png" alt="layer 14"><div class="cap">$\mathbf{g}_5$, Layer 14</div></div>
+      <div class="attn-cell"><img src="figures/attn_layer15.png" alt="layer 15"><div class="cap">$\mathbf{g}_5$, Layer 15</div></div>
+      <div class="attn-cell"><img src="figures/attn_layer16.png" alt="layer 16"><div class="cap">$\mathbf{g}_5$, Layer 16</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- =============================================================
+     QUANTITATIVE RESULTS
+============================================================= -->
+<section class="content">
+  <h2>Quantitative Results on World-Coordinate 3D Tracking</h2>
+  <p>
+    We report AJ, $\text{APD}_\text{3D}$, and OA after Sim(3) alignment. <strong>TrackCraft3R + ViPE</strong> surpasses DELTAv2 + ViPE and all feed-forward baselines, achieving the best average OA. <strong>TrackCraft3R + DA3</strong> further surpasses DELTAv2 + DA3 and achieves the best average AJ and APD$_\text{3D}$ across all benchmarks.
+  </p>
+  <div class="table-scroll">
+    <table class="results">
+      <thead>
+        <tr>
+          <th class="method" rowspan="2">Method</th>
+          <th colspan="3">ADT</th>
+          <th colspan="3">PStudio</th>
+          <th colspan="3">DR</th>
+          <th colspan="3">PO</th>
+          <th colspan="3">Kubric</th>
+          <th colspan="3" style="background:#fbf2db;">Average</th>
+        </tr>
+        <tr>
+          <th>AJ</th><th>APD</th><th>OA</th>
+          <th>AJ</th><th>APD</th><th>OA</th>
+          <th>AJ</th><th>APD</th><th>OA</th>
+          <th>AJ</th><th>APD</th><th>OA</th>
+          <th>AJ</th><th>APD</th><th>OA</th>
+          <th style="background:#fbf2db;">AJ</th><th style="background:#fbf2db;">APD</th><th style="background:#fbf2db;">OA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="group-head"><td colspan="19">(i) Iterative dense 3D trackers (use external depth and camera as input)</td></tr>
+        <tr>
+          <td class="method">DELTA + ViPE</td>
+          <td>0.509</td><td>0.695</td><td>0.814</td>
+          <td>0.499</td><td>0.781</td><td>0.696</td>
+          <td>0.405</td><td>0.585</td><td>0.764</td>
+          <td>0.456</td><td>0.629</td><td>0.812</td>
+          <td>0.289</td><td>0.372</td><td class="best">0.963</td>
+          <td>0.432</td><td>0.612</td><td>0.810</td>
+        </tr>
+        <tr>
+          <td class="method">DELTAv2 + ViPE</td>
+          <td>0.514</td><td>0.707</td><td>0.804</td>
+          <td>0.535</td><td>0.803</td><td>0.728</td>
+          <td>0.417</td><td>0.589</td><td>0.783</td>
+          <td>0.446</td><td>0.625</td><td>0.801</td>
+          <td>0.286</td><td>0.369</td><td>0.956</td>
+          <td>0.440</td><td>0.618</td><td>0.814</td>
+        </tr>
+        <tr>
+          <td class="method">DELTAv2 + DA3</td>
+          <td>0.615</td><td class="second">0.822</td><td>0.813</td>
+          <td>0.557</td><td class="second">0.850</td><td>0.709</td>
+          <td>0.449</td><td>0.622</td><td>0.782</td>
+          <td>0.530</td><td>0.725</td><td>0.802</td>
+          <td class="second">0.335</td><td class="second">0.411</td><td>0.959</td>
+          <td>0.498</td><td class="second">0.686</td><td>0.813</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="19">(ii) Feed-forward dense 3D trackers (pre-trained for 3D reconstruction)</td></tr>
+        <tr>
+          <td class="method">St4RTrack</td>
+          <td>0.593</td><td>0.768</td><td>0.832</td>
+          <td>0.572</td><td>0.755</td><td>0.810</td>
+          <td>0.353</td><td>0.571</td><td>0.684</td>
+          <td>0.397</td><td>0.658</td><td>0.686</td>
+          <td>0.119</td><td>0.190</td><td>0.770</td>
+          <td>0.407</td><td>0.588</td><td>0.756</td>
+        </tr>
+        <tr>
+          <td class="method">Any4D</td>
+          <td>0.465</td><td>0.613</td><td>0.836</td>
+          <td>0.422</td><td>0.571</td><td>0.813</td>
+          <td>0.441</td><td>0.696</td><td>0.680</td>
+          <td>0.439</td><td>0.683</td><td>0.735</td>
+          <td>0.389</td><td>0.497</td><td>0.883</td>
+          <td>0.431</td><td>0.612</td><td>0.789</td>
+        </tr>
+        <tr>
+          <td class="method">TraceAnything</td>
+          <td>0.593</td><td>0.763</td><td>0.841</td>
+          <td>0.523</td><td>0.693</td><td>0.813</td>
+          <td>0.207</td><td>0.355</td><td>0.733</td>
+          <td>0.204</td><td>0.365</td><td>0.693</td>
+          <td>0.242</td><td>0.325</td><td>0.820</td>
+          <td>0.354</td><td>0.500</td><td>0.780</td>
+        </tr>
+
+        <tr class="group-head"><td colspan="19">(iii) Feed-forward dense 3D trackers (pre-trained for video generation)</td></tr>
+        <tr>
+          <td class="method">MotionCrafter</td>
+          <td>0.446</td><td>0.604</td><td>0.804</td>
+          <td>0.504</td><td>0.666</td><td>0.814</td>
+          <td>0.493</td><td>0.617</td><td class="second">0.917</td>
+          <td>0.420</td><td>0.641</td><td>0.730</td>
+          <td>0.218</td><td>0.301</td><td>0.873</td>
+          <td>0.416</td><td>0.566</td><td>0.828</td>
+        </tr>
+
+        <tr class="ours">
+          <td class="method">TrackCraft3R + ViPE</td>
+          <td class="second">0.668</td><td>0.769</td><td class="best">0.941</td>
+          <td class="second">0.680</td><td>0.816</td><td class="best">0.894</td>
+          <td class="second">0.584</td><td class="second">0.703</td><td class="best">0.941</td>
+          <td class="second">0.584</td><td class="second">0.726</td><td class="best">0.894</td>
+          <td>0.303</td><td>0.394</td><td class="second">0.960</td>
+          <td class="second">0.564</td><td>0.682</td><td class="best">0.926</td>
+        </tr>
+        <tr class="ours">
+          <td class="method">TrackCraft3R + DA3</td>
+          <td class="best">0.863</td><td class="best">0.951</td><td class="best">0.945</td>
+          <td class="best">0.729</td><td class="best">0.871</td><td class="second">0.889</td>
+          <td class="best">0.652</td><td class="best">0.771</td><td>0.939</td>
+          <td class="best">0.729</td><td class="best">0.868</td><td class="second">0.894</td>
+          <td class="best">0.421</td><td class="best">0.505</td><td>0.959</td>
+          <td class="best">0.679</td><td class="best">0.793</td><td class="second">0.925</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:13.5px; color:var(--ink-soft); margin-top:6px;">
+    <strong>Bold</strong> highlight = best, lighter highlight = second-best.
+    APD denotes $\text{APD}_\text{3D}$. Datasets: Aria Digital Twin (ADT), Panoptic Studio (PStudio), Dynamic Replica (DR), PointOdyssey (PO), Kubric.
+  </p>
+</section>
+
+<!-- =============================================================
+     ROBUSTNESS: long videos and large motion
+============================================================= -->
+<section class="content">
+  <h2>Robustness to Long Videos and Large Motion</h2>
+  <p>
+    For <strong>large motion</strong>, we fix the clip length to 12 frames and increase the temporal stride $s$ from 1 to 12 (in steps of 1), enlarging per-frame displacement. For <strong>long videos</strong>, we fix the stride to $s{=}1$ and increase the sequence length $L$ from 12 to 120 (in steps of 12). Curves are averaged over the sparse 3D tracking benchmarks.
+  </p>
+  <div class="robust-grid">
+    <figure>
+      <img src="figures/apd_stride_new.jpg" alt="APD vs stride">
+      <figcaption>(a) $\text{APD}_\text{3D}$, varying stride $s$</figcaption>
+    </figure>
+    <figure>
+      <img src="figures/aj_stride_new.jpg" alt="AJ vs stride">
+      <figcaption>(b) AJ, varying stride $s$</figcaption>
+    </figure>
+    <figure>
+      <img src="figures/apd_length_new.jpg" alt="APD vs length">
+      <figcaption>(c) $\text{APD}_\text{3D}$, varying length $L$</figcaption>
+    </figure>
+    <figure>
+      <img src="figures/aj_length_new.jpg" alt="AJ vs length">
+      <figcaption>(d) AJ, varying length $L$</figcaption>
+    </figure>
+  </div>
+  <p style="margin-top:8px;">
+    <strong>TrackCraft3R</strong>'s performance drops much more slowly than DELTAv2 as stride $s$ or frame length $L$ grows, indicating that the learned motion prior generalizes well to large displacements and to long horizons beyond the training length (12 frames).
+  </p>
+</section>
+
+<!-- =============================================================
+     INFERENCE EFFICIENCY
+============================================================= -->
+<section class="content">
+  <h2>Inference Efficiency</h2>
+  <p>
+    We compare inference time and peak GPU memory of <strong>TrackCraft3R</strong>, DELTA, and DELTAv2 at $448{\times}448$ resolution for 12- and 23-frame clips on a single NVIDIA A6000 GPU.
+  </p>
+  <div class="eff-table">
+    <table class="results">
+      <thead>
+        <tr>
+          <th>Frames</th>
+          <th class="method">Method</th>
+          <th>Time (s) ↓</th>
+          <th>Memory (GB) ↓</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>12</td><td class="method">DELTA</td><td>14.64</td><td>29.97</td></tr>
+        <tr><td>12</td><td class="method">DELTAv2</td><td>5.00</td><td>35.46</td></tr>
+        <tr class="ours"><td>12</td><td class="method">TrackCraft3R (ours)</td><td class="best">3.91</td><td class="best">7.63</td></tr>
+        <tr><td colspan="4" style="border-bottom:none; padding:2px;"></td></tr>
+        <tr><td>23</td><td class="method">DELTA</td><td>28.92</td><td>30.78</td></tr>
+        <tr><td>23</td><td class="method">DELTAv2</td><td>9.70</td><td>35.90</td></tr>
+        <tr class="ours"><td>23</td><td class="method">TrackCraft3R (ours)</td><td class="best">7.84</td><td class="best">7.63</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:14px;">
+    <strong>TrackCraft3R</strong> is faster and lighter because it predicts trajectories in a single forward pass within a $1/16$ spatially compressed latent space, replacing the iterative refinement and explicit 4D cost volumes of DELTA and DELTAv2 with full 3D attention. The same trend holds for longer sequences.
+  </p>
+</section>
+
+<!-- =============================================================
+     QUALITATIVE COMPARISON
+============================================================= -->
+<section class="content">
+  <h2>Qualitative Comparison</h2>
+  <p>
+    We compare 3D trajectories predicted by <strong>TrackCraft3R</strong> and DELTAv2 on real-world ITTO and DAVIS videos. TrackCraft3R accurately estimates dense 3D trajectories under large camera motion, object motion, and occlusion, where DELTAv2 often fails. Note that the same query points are shared across methods.
+  </p>
+  <figure>
+    <img src="figures/suppl_qual_new.jpg" alt="Qualitative comparison vs. DELTAv2 on ITTO and DAVIS">
+  </figure>
+</section>
+
+<!-- =============================================================
+     LIMITATIONS
+============================================================= -->
+<section class="content limitations">
+  <h2>Limitations and Future Work</h2>
+  <ul>
+    <li><strong>Dependence on input geometry.</strong> Following common convention in world-coordinate 3D point tracking, <strong>TrackCraft3R</strong> relies on per-frame depth and camera pose from external 3D foundation models. While this aligns with prior work, accuracy is bounded by the quality of the input geometry. At the same time, this design allows <strong>TrackCraft3R</strong> to benefit from future advances in 3D foundation models, as improved geometry estimators can be incorporated without retraining.</li>
+    <li><strong>Unifying generation and dense 4D perception.</strong> A further direction is to jointly generate video and 3D tracks, unifying generation and dense 4D perception within a single video DiT. Such a unified model could serve as a strong foundation for robotic manipulation, where recent work uses generated videos and tracks as intermediate representations for action prediction.</li>
+  </ul>
+</section>
+
+<!-- =============================================================
+     BIBTEX (placeholder; to be filled in)
+============================================================= -->
+<section class="content bibtex" id="bibtex">
+  <h2>BibTeX</h2>
+  <pre>&nbsp;</pre>
+</section>
+
+<footer class="footer">
+  © 2026 · Page template adapted from <a href="https://st4rtrack.github.io/" target="_blank" rel="noopener">St4RTrack</a>.
+</footer>
+
+<script src="js/gallery.js"></script>
+</body>
+</html>
