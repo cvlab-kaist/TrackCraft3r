@@ -431,7 +431,7 @@ table.results tr.group-head td {
 }
 table.results td.best { background: rgba(217,119,6,0.18); font-weight: 600; }
 table.results td.second { background: rgba(217,119,6,0.07); }
-table.results tr.ours { background: #fff8eb; }
+table.results tr.ours { background: transparent; }
 table.results tr.ours td.method { color: var(--accent-deep); font-weight: 700; }
 
 /* --- Robustness 4-plot grid --- */
