@@ -122,10 +122,14 @@ def main():
         point_size=point_size, point_shape="rounded")
 
     # ---- Per-frame clouds (one per t, toggle visibility with slider) --------
+    # Each frame uses its OWN depth edge mask so that object boundaries that
+    # have moved since frame 0 are correctly excluded (prevents halo bleed).
+    # keep_full (frame-0) is intentionally kept for trajectory query selection.
     pc_frame_t = []
     for t in range(T):
-        pts_t = recon_map[t, ::args.downsample, ::args.downsample].reshape(-1, 3)[keep_flat]
-        rgb_t = rgb[t, ::args.downsample, ::args.downsample].reshape(-1, 3)[keep_flat]
+        keep_flat_t = (~_edge_mask(recon_map[t, :, :, 2]))[::args.downsample, ::args.downsample].reshape(-1)
+        pts_t = recon_map[t, ::args.downsample, ::args.downsample].reshape(-1, 3)[keep_flat_t]
+        rgb_t = rgb[t, ::args.downsample, ::args.downsample].reshape(-1, 3)[keep_flat_t]
         node = server.scene.add_point_cloud(
             f"/frame_t/{t}", points=pts_t, colors=rgb_t,
             point_size=point_size, point_shape="rounded")
