@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // briefly delay so the loader can fade in even on cached files
     setTimeout(() => {
+      video.poster = btn.dataset.poster || '';
       video.src = src;
       overlay.textContent = label;
       video.load();
