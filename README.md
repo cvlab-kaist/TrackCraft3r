@@ -1,6 +1,6 @@
 # TrackCraft3R: Repurposing Video Diffusion Transformers for Dense 3D Tracking
 
-[Paper (TBD)]() &nbsp;|&nbsp; [arXiv (TBD)]() &nbsp;|&nbsp; [Project Page](https://cvlab-kaist.github.io/TrackCraft3r)
+[Paper](paper/2605.12587v1.pdf) &nbsp;|&nbsp; [arXiv](https://arxiv.org/abs/2605.12587) &nbsp;|&nbsp; [Project Page](https://cvlab-kaist.github.io/TrackCraft3r)
 
 This repository contains the official training code for **TrackCraft3R**, the first method that repurposes a pre-trained video diffusion transformer (Wan2.1-T2V-1.3B) as a single-pass dense 3D tracker. Given a monocular video together with its predicted depth and camera, TrackCraft3R predicts dense 3D trajectories in a single forward pass.
 
